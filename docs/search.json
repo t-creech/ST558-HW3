@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "Homework 3.html",
+    "href": "Homework 3.html",
+    "title": "Homework 3",
+    "section": "",
+    "text": "First, let’s load in the lists from the rda file\n\nload(\"hw2_list.rda\")"
+  },
+  {
+    "objectID": "Homework 3.html#set-up",
+    "href": "Homework 3.html#set-up",
+    "title": "Homework 3",
+    "section": "",
+    "text": "First, let’s load in the lists from the rda file\n\nload(\"hw2_list.rda\")"
+  },
+  {
+    "objectID": "Homework 3.html#task-1",
+    "href": "Homework 3.html#task-1",
+    "title": "Homework 3",
+    "section": "Task 1",
+    "text": "Task 1\n\nFirst, let’s create a new column in each data frame.\n\n\nbp_list$treatment$status &lt;- character(nrow(bp_list$treatment))\nbp_list$placebo$status &lt;- character(nrow(bp_list$placebo))\n\n\nNow that we have rows, we need to implement logic to assign the categories. Let’s start with looping through the treatment group.\n\n\nfor (n in 1:nrow(bp_list$treatment)) {\n  if (bp_list[[\"treatment\"]][n, \"post_bp\"] &lt;= 120) {\n    bp_list[[\"treatment\"]][n, \"status\"] &lt;- \"optimal\"\n  } else if (bp_list[[\"treatment\"]][n, \"post_bp\"] &lt;= 130) {\n    bp_list[[\"treatment\"]][n, \"status\"] &lt;- \"borderline\"\n  } else {\n    bp_list[[\"treatment\"]][n, \"status\"] &lt;- \"high\"\n  }\n}\n\n\nNow we can simply repeat this logic for the placebo group.\n\n\nfor (n in 1:nrow(bp_list$placebo)) {\n  if (bp_list[[\"placebo\"]][n, \"post_bp\"] &lt;= 120) {\n    bp_list[[\"placebo\"]][n, \"status\"] &lt;- \"optimal\"\n  } else if (bp_list[[\"placebo\"]][n, \"post_bp\"] &lt;= 130) {\n    bp_list[[\"placebo\"]][n, \"status\"] &lt;- \"borderline\"\n  } else {\n    bp_list[[\"placebo\"]][n, \"status\"] &lt;- \"high\"\n  }\n}\n\nFinally, we can print each data frame to ensure it is correct.\n\nknitr::kable(bp_list$treatment)\n\n\n\n\n\npatient\npre_bp\npost_bp\ndiff_bp\nnormal\nstatus\n\n\n\n\nSubject_1\nSubject_1\n120\n127\n-7\nFALSE\nborderline\n\n\nSubject_2\nSubject_2\n151\n145\n6\nFALSE\nhigh\n\n\nSubject_3\nSubject_3\n125\n135\n-10\nFALSE\nhigh\n\n\nSubject_4\nSubject_4\n126\n122\n4\nFALSE\nborderline\n\n\nSubject_5\nSubject_5\n115\n115\n0\nTRUE\noptimal\n\n\nSubject_6\nSubject_6\n132\n122\n10\nFALSE\nborderline\n\n\nSubject_7\nSubject_7\n132\n123\n9\nFALSE\nborderline\n\n\nSubject_8\nSubject_8\n129\n126\n3\nFALSE\nborderline\n\n\nSubject_9\nSubject_9\n134\n126\n8\nFALSE\nborderline\n\n\nSubject_10\nSubject_10\n139\n129\n10\nFALSE\nborderline\n\n\nSubject_11\nSubject_11\n127\n132\n-5\nFALSE\nhigh\n\n\nSubject_12\nSubject_12\n122\n146\n-24\nFALSE\nhigh\n\n\nSubject_13\nSubject_13\n127\n120\n7\nFALSE\noptimal\n\n\nSubject_14\nSubject_14\n135\n114\n21\nTRUE\noptimal\n\n\nSubject_15\nSubject_15\n133\n121\n12\nFALSE\nborderline\n\n\nSubject_16\nSubject_16\n128\n120\n8\nFALSE\noptimal\n\n\nSubject_17\nSubject_17\n147\n128\n19\nFALSE\nborderline\n\n\nSubject_18\nSubject_18\n138\n120\n18\nFALSE\noptimal\n\n\nSubject_19\nSubject_19\n140\n133\n7\nFALSE\nhigh\n\n\nSubject_20\nSubject_20\n132\n115\n17\nTRUE\noptimal\n\n\n\n\nknitr::kable(bp_list$placebo)\n\n\n\n\npatient\npre_bp\npost_bp\ndiff_bp\nnormal\nstatus\n\n\n\n\nSubject_1\n138\n105\n33\nTRUE\noptimal\n\n\nSubject_2\n135\n136\n-1\nFALSE\nhigh\n\n\nSubject_3\n147\n123\n24\nFALSE\nborderline\n\n\nSubject_4\n117\n130\n-13\nFALSE\nborderline\n\n\nSubject_5\n152\n134\n18\nFALSE\nhigh\n\n\nSubject_6\n134\n143\n-9\nFALSE\nhigh\n\n\nSubject_7\n114\n135\n-21\nFALSE\nhigh\n\n\nSubject_8\n121\n139\n-18\nFALSE\nhigh\n\n\nSubject_9\n131\n120\n11\nFALSE\noptimal\n\n\nSubject_10\n130\n124\n6\nFALSE\nborderline"
+  },
+  {
+    "objectID": "Homework 3.html#task-2",
+    "href": "Homework 3.html#task-2",
+    "title": "Homework 3",
+    "section": "Task 2",
+    "text": "Task 2\nLet’s write a function that achieves all of the required tasks.\n\ntask_function &lt;- function(data, stat = \"mean\") {\n  my_fun &lt;- get(stat)\n  first_name &lt;- names(data)[1]\n  second_name &lt;- names(data)[2]\n  vector_names &lt;- c(paste0(first_name,\"_pre\"), paste0(first_name,\"_post\"), paste0(first_name, \"_diff\"), paste0(second_name, \"_pre\"), paste0(second_name, \"_post\"), paste0(second_name, \"_diff\"))\n  stats &lt;- c(my_fun(data[[1]][[\"pre_bp\"]]), my_fun(data[[1]][[\"post_bp\"]]), my_fun(data[[1]][[\"diff_bp\"]]), my_fun(data[[2]][[\"pre_bp\"]]), my_fun(data[[2]][[\"post_bp\"]]), my_fun(data[[2]][[\"diff_bp\"]]))\n  names(stats) &lt;- vector_names\n  return(stats)\n}\ntask_function(bp_list)\n\n treatment_pre treatment_post treatment_diff    placebo_pre   placebo_post \n        131.60         125.95           5.65         131.90         128.90 \n  placebo_diff \n          3.00 \n\ntask_function(bp_list, \"var\")\n\n treatment_pre treatment_post treatment_diff    placebo_pre   placebo_post \n      75.72632       78.99737      117.81842      149.87778      124.98889 \n  placebo_diff \n     341.33333 \n\ntask_function(bp_list, \"sd\")\n\n treatment_pre treatment_post treatment_diff    placebo_pre   placebo_post \n      8.702087       8.888046      10.854419      12.242458      11.179843 \n  placebo_diff \n     18.475209 \n\ntask_function(bp_list, \"min\")\n\n treatment_pre treatment_post treatment_diff    placebo_pre   placebo_post \n           115            114            -24            114            105 \n  placebo_diff \n           -21 \n\ntask_function(bp_list, \"max\")\n\n treatment_pre treatment_post treatment_diff    placebo_pre   placebo_post \n           151            146             21            152            143 \n  placebo_diff \n            33"
+  }
+]

@@ -1,0 +1,77 @@
+---
+title: "Homework 3"
+format: html
+---
+
+## Set Up
+
+First, let's load in the lists from the rda file
+
+```{r}
+load("hw2_list.rda")
+```
+
+## Task 1
+
+1. First, let's create a new column in each data frame.
+
+```{r}
+bp_list$treatment$status <- character(nrow(bp_list$treatment))
+bp_list$placebo$status <- character(nrow(bp_list$placebo))
+```
+
+2. Now that we have rows, we need to implement logic to assign the categories. Let's start with looping through the treatment group.
+
+```{r}
+for (n in 1:nrow(bp_list$treatment)) {
+  if (bp_list[["treatment"]][n, "post_bp"] <= 120) {
+    bp_list[["treatment"]][n, "status"] <- "optimal"
+  } else if (bp_list[["treatment"]][n, "post_bp"] <= 130) {
+    bp_list[["treatment"]][n, "status"] <- "borderline"
+  } else {
+    bp_list[["treatment"]][n, "status"] <- "high"
+  }
+}
+```
+
+3. Now we can simply repeat this logic for the placebo group.
+
+```{r}
+for (n in 1:nrow(bp_list$placebo)) {
+  if (bp_list[["placebo"]][n, "post_bp"] <= 120) {
+    bp_list[["placebo"]][n, "status"] <- "optimal"
+  } else if (bp_list[["placebo"]][n, "post_bp"] <= 130) {
+    bp_list[["placebo"]][n, "status"] <- "borderline"
+  } else {
+    bp_list[["placebo"]][n, "status"] <- "high"
+  }
+}
+```
+
+Finally, we can print each data frame to ensure it is correct.
+
+```{r}
+knitr::kable(bp_list$treatment)
+knitr::kable(bp_list$placebo)
+```
+
+## Task 2
+
+Let's write a function that achieves all of the required tasks.
+
+``` {r}
+task_function <- function(data, stat = "mean") {
+  my_fun <- get(stat)
+  first_name <- names(data)[1]
+  second_name <- names(data)[2]
+  vector_names <- c(paste0(first_name,"_pre"), paste0(first_name,"_post"), paste0(first_name, "_diff"), paste0(second_name, "_pre"), paste0(second_name, "_post"), paste0(second_name, "_diff"))
+  stats <- c(my_fun(data[[1]][["pre_bp"]]), my_fun(data[[1]][["post_bp"]]), my_fun(data[[1]][["diff_bp"]]), my_fun(data[[2]][["pre_bp"]]), my_fun(data[[2]][["post_bp"]]), my_fun(data[[2]][["diff_bp"]]))
+  names(stats) <- vector_names
+  return(stats)
+}
+task_function(bp_list)
+task_function(bp_list, "var")
+task_function(bp_list, "sd")
+task_function(bp_list, "min")
+task_function(bp_list, "max")
+```
